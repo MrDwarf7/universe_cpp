@@ -7,7 +7,6 @@
 #include "fast_rand.hpp"
 #include "generator.hpp"
 #include "imgui.h"
-#include "imgui_internal.h"
 #include "model.hpp"
 #include "raylib.h"
 
@@ -38,8 +37,8 @@
 
 void MUI::Mui::update() {
 	this->mouse_pos = Point{
-	  static_cast<int>(GetMouseX() / this->sector_size + this->cam_pos.x),
-	  static_cast<int>(GetMouseY() / this->sector_size + this->cam_pos.y),
+	  static_cast<float>(static_cast<float>(GetMouseX()) / this->sector_size + this->cam_pos.x),
+	  static_cast<float>(static_cast<float>(GetMouseY()) / this->sector_size + this->cam_pos.y),
 	};
 
 	// TODO: [dedup]
@@ -52,8 +51,6 @@ void MUI::Mui::update() {
 		this->hovered_star = std::nullopt;
 	}
 
-	// BUG: This isn't correctly due to the 'slowdown' occuring _because_ of
-	// rendering lol...
 	const float KEY_CAM_SENS =
 		this->sector_size * KEY_CAM_SENS_MULT * (GetFrameTime() * static_cast<float>(KEY_CAM_SENS_DAMPING));
 
@@ -81,7 +78,7 @@ void MUI::Mui::show_ui() {
 				nullptr,
 				ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize
 			)) {
-			ImGui::Text("Sector: X(%i) : Y(%i)", this->mouse_pos.x, this->mouse_pos.y);
+			ImGui::Text("Sector: X(%f) : Y(%f)", this->mouse_pos.x, this->mouse_pos.y);
 			ImGui::Text("Sector Seed: %lu", this->star_system_rand.seed);
 			ImGui::Text("Color: %s", this->hovered_star->color_name());
 			ImGui::Text("Radius: %f", this->hovered_star->radius);
@@ -104,8 +101,8 @@ void MUI::Mui::draw() {
 	for (size_t x = 0; x < num_sectors_x; x++) {
 		for (size_t y = 0; y < num_sectors_y; y++) {
 			Point global_sector = Point{
-			  static_cast<int>(this->cam_pos.x + x),
-			  static_cast<int>(this->cam_pos.y + y),
+			  static_cast<float>(this->cam_pos.x + x),
+			  static_cast<float>(this->cam_pos.y + y),
 			};
 
 			// TODO: [dedup] : There's likely a way we can not have to hash=>seed in both update() and draw()
@@ -117,7 +114,7 @@ void MUI::Mui::draw() {
 					star = Generator::GenerateStar(global_sector.x, global_sector.y, this->star_system_rand);
 				} catch (const std::exception &e) {
 					printf(
-						"Error generating star at sector (%d, %d): %s\n", global_sector.x, global_sector.y, e.what()
+						"Error generating star at sector (%f, %f): %s\n", global_sector.x, global_sector.y, e.what()
 					);
 					throw e;
 				};

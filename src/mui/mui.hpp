@@ -11,10 +11,10 @@
 namespace MUI {
 
 // typedef int Pixels;
-using Pixels = int;
+using Pixels = float;
 
 struct Point {
-	int x, y;
+	float x, y;
 };
 
 class Mui {
