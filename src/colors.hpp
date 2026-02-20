@@ -44,6 +44,8 @@ namespace Kanagawa {
 	const Color SlateBlue    = Color{101, 132, 147};
 } // namespace Kanagawa
 
+// TODO: [colorschemes] : This is a WIP and need to swap them around
+// + likely create a lookup
 namespace TokyoNight {
 	const Color Crust        = Color{22, 24, 38}; // deepest bg ≈ #16161e
 	const Color Base         = Color{26, 27, 38}; // main bg      ≈ #1a1b26
